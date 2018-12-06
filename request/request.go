@@ -10,13 +10,13 @@ import (
 	"time"
 )
 
-type Config struct {
-	Token   string //Токен для обращения к API
-	Timeout uint
+type Request struct {
+	Token   string
+	Timeout time.Duration
 }
 
 //Метод выполняет запрос в dadata и делает unmarshal результата в v
-func (c *Config) Request(apiUrl string, post map[string]interface{}, v interface{}) error {
+func (r Request) Request(apiUrl string, post map[string]interface{}, v interface{}) error {
 
 	u, err := url.Parse(apiUrl)
 	if err != nil {
@@ -28,13 +28,13 @@ func (c *Config) Request(apiUrl string, post map[string]interface{}, v interface
 	}
 
 	var client = http.Client{
-		Timeout: time.Duration(c.Timeout) * time.Second,
+		Timeout: r.Timeout,
 	}
 	req, err := http.NewRequest("POST", u.String(), bytes.NewReader(data))
 	if err != nil {
 		return fmt.Errorf(`Can't create new request "%s": %s`, u.String(), err.Error())
 	}
-	req.Header.Set("Authorization", "Token "+c.Token)
+	req.Header.Set("Authorization", "Token "+r.Token)
 
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := client.Do(req)

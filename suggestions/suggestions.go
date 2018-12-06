@@ -1,15 +1,15 @@
 package suggestions
 
 import (
-	"dadata/request"
 	"fmt"
+	"github.com/dmalykh/dadata/request"
 )
 
 type Suggestions struct {
-	Config *request.Config
+	Config *request.Request
 }
 
-func GetInstance(c *request.Config) *Suggestions {
+func GetInstance(c *request.Request) *Suggestions {
 	return &Suggestions{
 		Config: c,
 	}
