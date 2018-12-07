@@ -1,12 +1,11 @@
 package dadata
 
 import (
-	"dadata/request"
 	"testing"
 )
 
 func TestDadata_Suggestion(t *testing.T) {
-	var config = request.Config{
+	var config = Config{
 		Token:   "",
 		Timeout: 10,
 	}

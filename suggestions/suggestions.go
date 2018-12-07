@@ -6,10 +6,10 @@ import (
 )
 
 type Suggestions struct {
-	Config *request.Request
+	Config *request.DadataRequest
 }
 
-func GetInstance(c *request.Request) *Suggestions {
+func GetInstance(c *request.DadataRequest) *Suggestions {
 	return &Suggestions{
 		Config: c,
 	}

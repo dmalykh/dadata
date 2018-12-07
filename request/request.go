@@ -1,55 +1,21 @@
+//Выполнение запроса к dadata.
 package request
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-	"net/url"
 	"time"
 )
 
-type Request struct {
+type DadataRequest struct {
 	Token   string
 	Timeout time.Duration
+	ApiUrl  string
+	Post    map[string]interface{}
+	Handle  func(c DadataRequest, w interface{}) error
 }
 
-//Метод выполняет запрос в dadata и делает unmarshal результата в v
-func (r Request) Request(apiUrl string, post map[string]interface{}, v interface{}) error {
-
-	u, err := url.Parse(apiUrl)
-	if err != nil {
-		return fmt.Errorf(`Can't parse url "%s": %s`, apiUrl, err.Error())
-	}
-	data, err := json.Marshal(post)
-	if err != nil {
-		return fmt.Errorf(`Can't marshal post "%#v": %s`, post, err.Error())
-	}
-
-	var client = http.Client{
-		Timeout: r.Timeout,
-	}
-	req, err := http.NewRequest("POST", u.String(), bytes.NewReader(data))
-	if err != nil {
-		return fmt.Errorf(`Can't create new request "%s": %s`, u.String(), err.Error())
-	}
-	req.Header.Set("Authorization", "Token "+r.Token)
-
-	req.Header.Set("Content-Type", "application/json")
-	resp, err := client.Do(req)
-	if err != nil {
-		return fmt.Errorf(`Can't make request to "%s" with "%s": %s`, u.String(), string(data), err.Error())
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return fmt.Errorf(`Can't read response from "%s" with "%s": %s`, u.String(), string(data), err.Error())
-	}
-	err = json.Unmarshal(body, &v)
-	if err != nil {
-		return fmt.Errorf(`Can't unmarshal result "%s" from "%s" with "%s": %s`, string(body), u.String(), string(data), err.Error())
-	}
-	return nil
+//Метод выполняет запрос в dadata и делает unmarshal результата в v, используя специальный hander для выполнения запроса.
+func (r DadataRequest) Request(apiUrl string, post map[string]interface{}, v interface{}) error {
+	r.ApiUrl = apiUrl
+	r.Post = post
+	return r.Handle(r, v)
 }

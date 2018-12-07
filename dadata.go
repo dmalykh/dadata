@@ -1,4 +1,5 @@
-//Методы для работы с API Dadata
+//Методы для работы с API Dadata.
+//Тип Config содержит метод Handle, который можно переопределить для изменения выполнения самих запросов в API dadata.ru, например, для кэширования.
 package dadata
 
 import (
@@ -11,10 +12,11 @@ import (
 type Config struct {
 	Token   string //Токен для обращения к API
 	Timeout uint
+	Handle  func(c request.DadataRequest, w interface{}) error
 }
 
 type Dadata struct {
-	request    request.Request
+	request    request.DadataRequest
 	suggestion struct {
 		once sync.Once
 		s    *suggestions.Suggestions
@@ -23,10 +25,14 @@ type Dadata struct {
 
 //Возвращает новый экземпляр dadata
 func New(config *Config) *Dadata {
+	if config.Handle == nil {
+		config.Handle = request.DefaultHandler
+	}
 	return &Dadata{
-		request: request.Request{
+		request: request.DadataRequest{
 			Token:   config.Token,
 			Timeout: time.Duration(config.Timeout) * time.Second,
+			Handle:  config.Handle,
 		},
 	}
 }
