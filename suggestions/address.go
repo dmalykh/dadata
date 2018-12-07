@@ -81,9 +81,9 @@ type AddressItemData struct {
 	FlatType             string   `json:"flat_type"`
 	FlatTypeFull         string   `json:"flat_type_full"`
 	Flat                 string   `json:"flat"`
-	FlatArea             string   `json:"flat_area"`
-	SquareMeterPrice     string   `json:"square_meter_price"`
-	FlatPrice            string   `json:"flat_price"`
+	FlatArea             float64  `json:"flat_area"`
+	SquareMeterPrice     float64  `json:"square_meter_price"`
+	FlatPrice            uint     `json:"flat_price"`
 	PostalBox            string   `json:"postal_box"`
 	FiasID               string   `json:"fias_id"`
 	FiasCode             string   `json:"fias_code"`
@@ -101,7 +101,7 @@ type AddressItemData struct {
 	BeltwayHit           string   `json:"beltway_hit"`
 	BeltwayDistance      string   `json:"beltway_distance"`
 	Metro                string   `json:"metro"`
-	QcGeo                string   `json:"qc_geo"`
+	QcGeo                uint     `json:"qc_geo"`
 	QcComplete           string   `json:"qc_complete"`
 	QcHouse              string   `json:"qc_house"`
 	HistoryValues        []string `json:"history_values"`
