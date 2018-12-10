@@ -87,7 +87,7 @@ type AddressItemData struct {
 	PostalBox            string   `json:"postal_box"`
 	FiasID               string   `json:"fias_id"`
 	FiasCode             string   `json:"fias_code"`
-	FiasLevel            string   `json:"fias_level"`
+	FiasLevel            int      `json:"fias_level"`
 	FiasActualityState   string   `json:"fias_actuality_state"`
 	KladrID              string   `json:"kladr_id"`
 	CapitalMarker        string   `json:"capital_marker"`
@@ -102,10 +102,10 @@ type AddressItemData struct {
 	BeltwayDistance      string   `json:"beltway_distance"`
 	Metro                string   `json:"metro"`
 	QcGeo                uint     `json:"qc_geo"`
-	QcComplete           string   `json:"qc_complete"`
-	QcHouse              string   `json:"qc_house"`
+	QcComplete           uint     `json:"qc_complete"`
+	QcHouse              uint     `json:"qc_house"`
 	HistoryValues        []string `json:"history_values"`
 	UnparsedParts        string   `json:"unparsed_parts"`
 	Source               string   `json:"source"`
-	Qc                   string   `json:"qc"`
+	Qc                   uint     `json:"qc"`
 }
