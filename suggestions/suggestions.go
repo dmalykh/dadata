@@ -1,8 +1,8 @@
 package suggestions
 
 import (
+	"dadata/request"
 	"fmt"
-	"github.com/dmalykh/dadata/request"
 )
 
 type Suggestions struct {
@@ -15,7 +15,7 @@ func GetInstance(c *request.DadataRequest) *Suggestions {
 	}
 }
 
-const DADATA_SUGGESTIONS_URL = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/%s"
+var DADATA_SUGGESTIONS_URL = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/%s"
 
 //Метод для выполнения запросов типа suggestions в dadata
 func (s *Suggestions) request(kind string, post map[string]interface{}, result interface{}) error {
