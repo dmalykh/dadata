@@ -1,8 +1,8 @@
 package suggestions
 
 import (
-	"dadata/request"
 	"fmt"
+	"github.com/dmalykh/dadata/request"
 )
 
 type Suggestions struct {

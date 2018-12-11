@@ -1,7 +1,7 @@
 package suggestions
 
 import (
-	"dadata/request"
+	"github.com/dmalykh/dadata/request"
 	"net/http"
 	"net/http/httptest"
 	"testing"

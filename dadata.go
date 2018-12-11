@@ -3,8 +3,8 @@
 package dadata
 
 import (
-	"dadata/request"
-	"dadata/suggestions"
+	"github.com/dmalykh/dadata/request"
+	"github.com/dmalykh/dadata/suggestions"
 	"sync"
 	"time"
 )
