@@ -10,13 +10,13 @@ import (
 )
 
 type Config struct {
-	Token   string //Токен для обращения к API
-	Timeout uint
-	Handle  func(c request.DadataRequest, w interface{}) error
+	Token   string                                             //Токен для обращения к API
+	Timeout time.Duration                                      //Время для timeout запроса в dadata
+	Handle  func(c request.DadataRequest, w interface{}) error //Метод, через который будет "проходить" ответ с сервиса
 }
 
 type Dadata struct {
-	request    request.DadataRequest
+	request    *request.DadataRequest
 	suggestion struct {
 		once sync.Once
 		s    *suggestions.Suggestions
@@ -29,7 +29,7 @@ func New(config *Config) *Dadata {
 		config.Handle = request.DefaultHandler
 	}
 	return &Dadata{
-		request: request.DadataRequest{
+		request: &request.DadataRequest{
 			Token:   config.Token,
 			Timeout: time.Duration(config.Timeout) * time.Second,
 			Handle:  config.Handle,
@@ -40,7 +40,7 @@ func New(config *Config) *Dadata {
 //Возвращает экземплятр структуры через singletone для работы с подсказками
 func (d *Dadata) Suggestions() *suggestions.Suggestions {
 	d.suggestion.once.Do(func() {
-		d.suggestion.s = suggestions.GetInstance(&d.request)
+		d.suggestion.s = suggestions.GetInstance(d.request)
 	})
 	return d.suggestion.s
 }
