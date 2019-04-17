@@ -6,7 +6,6 @@ import (
 )
 
 func config() Config {
-	os.Setenv("KEY", "061863cf0ac433f1e3e918f5d7f88d50a3b3af24")
 	return Config{
 		Token:   os.Getenv("KEY"),
 		Timeout: 10,
