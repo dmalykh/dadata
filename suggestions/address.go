@@ -1,18 +1,19 @@
 package suggestions
 
 import (
+	"context"
 	"fmt"
 	"strings"
 )
 
 //Подсказки о адресу https://dadata.ru/api/suggest/#about-address
-func (s *Suggestions) Address(address string, count int) ([]AddressItem, error) {
+func (s *Suggestions) Address(ctx context.Context, address string, count int) ([]AddressItem, error) {
 	var suggestions Address
 	query := map[string]interface{}{
 		"query": strings.Replace(address, "\\", " ", -1), //Дадата сходит с ума при нахождении в адресе \\
 		"count": count,
 	}
-	if err := s.request("address", query, &suggestions); err != nil {
+	if err := s.request(ctx, "address", query, &suggestions); err != nil {
 		return []AddressItem{}, fmt.Errorf(`Can't make request "%s" %d: %s`, address, count, err.Error())
 	}
 	return suggestions.Suggestions, nil

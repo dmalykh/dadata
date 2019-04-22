@@ -1,6 +1,7 @@
 package dadata
 
 import (
+	"context"
 	"os"
 	"testing"
 )
@@ -20,7 +21,8 @@ func TestDadata_Suggestions(t *testing.T) {
 func TestDadata_Suggestions_Address(t *testing.T) {
 	var config = config()
 	var d = New(&config)
-	items, err := d.Suggestions().Address("Москва Мытная 7", 10)
+	var ctx = context.Background()
+	items, err := d.Suggestions().Address(ctx, "Москва Мытная 7", 10)
 	if err != nil {
 		t.Fatal(err)
 	}

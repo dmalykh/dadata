@@ -33,8 +33,9 @@ func DefaultHandler(c DadataRequest, w *interface{}) error {
 	if err != nil {
 		return fmt.Errorf(`Can't create new request "%s": %s`, u.String(), err.Error())
 	}
-	req.Header.Set("Authorization", "Token "+c.Token)
 
+	req.WithContext(c.Ctx)
+	req.Header.Set("Authorization", "Token "+c.Token)
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := client.Do(req)
 	if err != nil {

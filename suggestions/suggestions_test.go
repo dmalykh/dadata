@@ -1,6 +1,7 @@
 package suggestions
 
 import (
+	"context"
 	"github.com/dmalykh/dadata/request"
 	"net/http"
 	"net/http/httptest"
@@ -22,10 +23,11 @@ func TestSuggestions_Address(t *testing.T) {
 		Response string
 	}
 	var r = GetInstance(&request.DadataRequest{
-		Handle: func(c request.DadataRequest, w interface{}) error {
+		Handle: func(c request.DadataRequest, w *interface{}) error {
 			return request.DefaultHandler(c, w)
 		},
 	})
+	var ctx = context.Background()
 
 	var cases = []testCase{
 		{
@@ -51,7 +53,7 @@ func TestSuggestions_Address(t *testing.T) {
 		}))
 		DADATA_SUGGESTIONS_URL = server.URL + "/suggestions/%s"
 
-		items, err := r.Address(c.Name, c.Count)
+		items, err := r.Address(ctx, c.Name, c.Count)
 		if err != nil {
 			t.Errorf(`Can't receive "%s" "%d": %s`, c.Name, c.Count, err.Error())
 		}
