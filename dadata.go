@@ -10,9 +10,9 @@ import (
 )
 
 type Config struct {
-	Token   string                                             //Токен для обращения к API
-	Timeout time.Duration                                      //Время для timeout запроса в dadata
-	Handle  func(c request.DadataRequest, w interface{}) error //Метод, через который будет "проходить" ответ с сервиса
+	Token   string                                              //Токен для обращения к API
+	Timeout time.Duration                                       //Время для timeout запроса в dadata
+	Handle  func(c request.DadataRequest, w *interface{}) error //Метод, через который будет "проходить" ответ с сервиса
 }
 
 type Dadata struct {

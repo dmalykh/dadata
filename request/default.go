@@ -9,8 +9,14 @@ import (
 	"net/url"
 )
 
+type DadataError struct {
+	Family  string `json:"family"`
+	Reason  string `json:"reason"`
+	Message string `json:"message"`
+}
+
 //Метод по-умолчанию, выполняющий запросы в дадата.
-func DefaultHandler(c DadataRequest, w interface{}) error {
+func DefaultHandler(c DadataRequest, w *interface{}) error {
 	u, err := url.Parse(c.ApiUrl)
 	if err != nil {
 		return fmt.Errorf(`Can't parse url "%s": %s`, c.ApiUrl, err.Error())
@@ -40,6 +46,12 @@ func DefaultHandler(c DadataRequest, w interface{}) error {
 	if err != nil {
 		return fmt.Errorf(`Can't read response from "%s" with "%s": %s`, u.String(), string(data), err.Error())
 	}
+	//Проверка не вернула ли dadata ошибку
+	var dadataerr DadataError
+	if json.Unmarshal(body, &dadataerr); dadataerr.Reason != "" {
+		return fmt.Errorf(`Error from dadata: %s`, string(body))
+	}
+
 	err = json.Unmarshal(body, &w)
 	if err != nil {
 		return fmt.Errorf(`Can't unmarshal result "%s" from "%s" with "%s": %s`, string(body), u.String(), string(data), err.Error())
