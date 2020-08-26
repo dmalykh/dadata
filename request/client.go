@@ -22,6 +22,7 @@ func (c Client) Request(ctx context.Context, req Request, v interface{}) error {
 	if err != nil {
 		return fmt.Errorf(`Can't parse url "%s": %s`, req.Url, err.Error())
 	}
+	u.RawQuery = req.QueryParams.Encode()
 	postData, err := json.Marshal(req.PostData)
 	if err != nil {
 		return fmt.Errorf(`Can't marshal post "%#v": %s`, req.PostData, err.Error())
