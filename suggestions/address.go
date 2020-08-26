@@ -8,8 +8,8 @@ import (
 )
 
 //Подсказки о адресу https://dadata.ru/api/suggest/#about-address
-func (s *Suggestions) Address(ctx context.Context, address string, count int) ([]AddressItem, error) {
-	var suggestions Address
+func (s *Suggestions) Address(ctx context.Context, address string, count int) ([]Address, error) {
+	var suggestions Addresses
 
 	err := s.makeRequest(
 		ctx,
@@ -25,18 +25,18 @@ func (s *Suggestions) Address(ctx context.Context, address string, count int) ([
 	)
 
 	if err != nil {
-		return []AddressItem{}, fmt.Errorf(`Can't make makeRequest "%s" %d: %s`, address, count, err.Error())
+		return []Address{}, fmt.Errorf(`Can't make makeRequest "%s" %d: %s`, address, count, err.Error())
 	}
 	return suggestions.Suggestions, nil
 }
 
 //Результат ответа подскаски адреса
-type Address struct {
-	Suggestions []AddressItem `json:"suggestions"`
+type Addresses struct {
+	Suggestions []Address `json:"suggestions"`
 }
 
 //Единица результата ответа подсказки адреса
-type AddressItem struct {
+type Address struct {
 	Value             string          `json:"value"`
 	UnrestrictedValue string          `json:"unrestricted_value"`
 	Data              AddressItemData `json:"data"`
