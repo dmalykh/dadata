@@ -2,23 +2,22 @@
 package request
 
 import (
-	"context"
-	"time"
+	"net/http"
+	"net/url"
 )
 
-type DadataRequest struct {
-	Token   string
-	Timeout time.Duration
-	ApiUrl  string
-	Post    map[string]interface{}
-	Handle  func(c DadataRequest, w *interface{}) error
-	Ctx     context.Context
+const GET = "GET"
+const POST = "POST"
+
+type Request struct {
+	Url         string
+	Method      string
+	QueryParams url.Values
+	PostData    map[string]interface{}
+	client      *http.Client
+	request     *http.Request
 }
 
-//Метод выполняет запрос в dadata и делает unmarshal результата в v, используя специальный hander для выполнения запроса.
-func (r DadataRequest) Request(ctx context.Context, apiUrl string, post map[string]interface{}, v interface{}) error {
-	r.ApiUrl = apiUrl
-	r.Post = post
-	r.Ctx = ctx
-	return r.Handle(r, &v)
+func (r *Request) exec() error {
+	return nil
 }

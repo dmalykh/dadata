@@ -3,18 +3,29 @@ package suggestions
 import (
 	"context"
 	"fmt"
+	"github.com/dmalykh/dadata/request"
 	"strings"
 )
 
 //Подсказки о адресу https://dadata.ru/api/suggest/#about-address
 func (s *Suggestions) Address(ctx context.Context, address string, count int) ([]AddressItem, error) {
 	var suggestions Address
-	query := map[string]interface{}{
-		"query": strings.Replace(address, "\\", " ", -1), //Дадата сходит с ума при нахождении в адресе \\
-		"count": count,
-	}
-	if err := s.request(ctx, "address", query, &suggestions); err != nil {
-		return []AddressItem{}, fmt.Errorf(`Can't make request "%s" %d: %s`, address, count, err.Error())
+
+	err := s.makeRequest(
+		ctx,
+		"suggest/address",
+		request.Request{
+			Method: request.POST,
+			PostData: map[string]interface{}{
+				"query": strings.Replace(address, "\\", " ", -1), //Дадата сходит с ума при нахождении в адресе \\
+				"count": count,
+			},
+		},
+		&suggestions,
+	)
+
+	if err != nil {
+		return []AddressItem{}, fmt.Errorf(`Can't make makeRequest "%s" %d: %s`, address, count, err.Error())
 	}
 	return suggestions.Suggestions, nil
 }

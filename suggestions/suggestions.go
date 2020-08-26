@@ -7,22 +7,22 @@ import (
 )
 
 type Suggestions struct {
-	Config *request.DadataRequest
+	Client *request.Client
 }
 
-func GetInstance(c *request.DadataRequest) *Suggestions {
+func GetInstance(c *request.Client) *Suggestions {
 	return &Suggestions{
-		Config: c,
+		Client: c,
 	}
 }
 
-var DADATA_SUGGESTIONS_URL = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/%s"
+var DADATA_SUGGESTIONS_URL = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/%s"
 
 //Метод для выполнения запросов типа suggestions в dadata
-func (s *Suggestions) request(ctx context.Context, kind string, post map[string]interface{}, result interface{}) error {
-	var u = fmt.Sprintf(DADATA_SUGGESTIONS_URL, kind)
-	if err := s.Config.Request(ctx, u, post, result); err != nil {
-		return fmt.Errorf(`Can't make request to "%s": %s`, u, err.Error())
+func (s *Suggestions) makeRequest(ctx context.Context, method string, req request.Request, result interface{}) error {
+	req.Url = fmt.Sprintf(DADATA_SUGGESTIONS_URL, method)
+	if err := s.Client.Request(ctx, req, result); err != nil {
+		return fmt.Errorf(`Can't make makeRequest to "%s": %s`, req.Url, err.Error())
 	}
 	return nil
 }

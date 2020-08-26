@@ -3,31 +3,47 @@ package suggestions
 import (
 	"context"
 	"github.com/dmalykh/dadata/request"
+	re "github.com/dmalykh/dadata/request"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 )
 
 func TestGetInstance(t *testing.T) {
-	var r request.DadataRequest
-	if GetInstance(&r) == nil {
+	var c request.Client
+	if GetInstance(&c) == nil {
 		t.Fatalf(`Can't execute GetInstance().`)
 	}
 }
 
+func getTestInstance() *Suggestions {
+	return GetInstance(&request.Client{
+		Handle: func(ctx context.Context, request request.Request, v *interface{}) error {
+			return re.DefaultHandler(ctx, request, v)
+		},
+		Client: &http.Client{
+			Timeout: time.Duration(3600) * time.Second, //Для дебаггера
+			Transport: &http.Transport{
+				MaxIdleConnsPerHost: 1024,
+				TLSHandshakeTimeout: 0 * time.Second,
+			},
+		},
+	})
+}
+
 func TestSuggestions_Address(t *testing.T) {
+
+	var r = getTestInstance()
+
+	var ctx = context.Background()
+
 	type testCase struct {
 		Name     string
 		Count    int
 		Need     int
 		Response string
 	}
-	var r = GetInstance(&request.DadataRequest{
-		Handle: func(c request.DadataRequest, w *interface{}) error {
-			return request.DefaultHandler(c, w)
-		},
-	})
-	var ctx = context.Background()
 
 	var cases = []testCase{
 		{
@@ -43,10 +59,11 @@ func TestSuggestions_Address(t *testing.T) {
 			Response: `{"suggestions":[{"value":"г Москва, ул Широкая, д 1 к 94","unrestricted_value":"г Москва, р-н Северное Медведково, ул Широкая, д 1 к 94","data":{"postal_code":"127282","country":"Россия","region_fias_id":"0c5b2444-70a0-4932-980c-b4dc0d3f02b5","region_kladr_id":"7700000000000","region_with_type":"г Москва","region_type":"г","region_type_full":"город","region":"Москва","area_fias_id":null,"area_kladr_id":null,"area_with_type":null,"area_type":null,"area_type_full":null,"area":null,"city_fias_id":"0c5b2444-70a0-4932-980c-b4dc0d3f02b5","city_kladr_id":"7700000000000","city_with_type":"г Москва","city_type":"г","city_type_full":"город","city":"Москва","city_area":"Северо-восточный","city_district_fias_id":null,"city_district_kladr_id":null,"city_district_with_type":"р-н Северное Медведково","city_district_type":"р-н","city_district_type_full":"район","city_district":"Северное Медведково","settlement_fias_id":null,"settlement_kladr_id":null,"settlement_with_type":null,"settlement_type":null,"settlement_type_full":null,"settlement":null,"street_fias_id":"0031d949-d7d4-4771-ac46-1a6f843297c0","street_kladr_id":"77000000000314800","street_with_type":"ул Широкая","street_type":"ул","street_type_full":"улица","street":"Широкая","house_fias_id":null,"house_kladr_id":null,"house_type":"д","house_type_full":"дом","house":"1","block_type":"к","block_type_full":"корпус","block":"94","flat_type":null,"flat_type_full":null,"flat":null,"flat_area":null,"square_meter_price":null,"flat_price":null,"postal_box":null,"fias_id":"0031d949-d7d4-4771-ac46-1a6f843297c0","fias_code":"77000000000000031480000","fias_level":"7","fias_actuality_state":"0","kladr_id":"77000000000314800","geoname_id":null,"capital_marker":"0","okato":"45280583000","oktmo":"45362000","tax_office":"7715","tax_office_legal":"7715","timezone":null,"geo_lat":"55.8894715","geo_lon":"37.652837","beltway_hit":null,"beltway_distance":null,"metro":null,"qc_geo":"1","qc_complete":null,"qc_house":null,"history_values":null,"unparsed_parts":null,"source":"Москва, Широкая 1 1 к 94","qc":null}}]}`,
 		},
 	}
+
 	for _, c := range cases {
 
 		var server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Path == "/suggestions/address" {
+			if r.URL.Path == "/suggestions/suggest/address" {
 				w.WriteHeader(http.StatusOK)
 				w.Write([]byte(c.Response))
 			}
