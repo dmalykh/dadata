@@ -30,7 +30,7 @@ func (s *Suggestions) Address(ctx context.Context, address string, count int) ([
 	return suggestions.Suggestions, nil
 }
 
-//Результат ответа подскаски адреса
+//Результат ответа подсказки адреса
 type Addresses struct {
 	Suggestions []Address `json:"suggestions"`
 }
