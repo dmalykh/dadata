@@ -52,5 +52,6 @@ func (d *Dadata) Suggestions() *suggestions.Suggestions {
 	return suggestions.GetInstance(&suggestions.Config{
 		Client:   d.request,
 		Language: d.config.Language,
+		Country:  "*", //@TODO: MOVE TO CONFIG
 	})
 }

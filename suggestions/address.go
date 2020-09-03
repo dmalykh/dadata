@@ -20,6 +20,9 @@ func (s *Suggestions) Address(ctx context.Context, address string, count int) ([
 				"query":    strings.Replace(address, "\\", " ", -1), //Дадата сходит с ума при нахождении в адресе \\
 				"count":    count,
 				"language": s.language,
+				"locations": []map[string]string{
+					{"country": s.country},
+				},
 			},
 		},
 		&suggestions,

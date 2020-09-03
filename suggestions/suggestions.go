@@ -9,17 +9,20 @@ import (
 type Suggestions struct {
 	Client   *request.Client
 	language string
+	country  string
 }
 
 type Config struct {
 	Client   *request.Client
 	Language string
+	Country  string
 }
 
 func GetInstance(c *Config) *Suggestions {
 	return &Suggestions{
 		Client:   c.Client,
 		language: c.Language,
+		country:  c.Country,
 	}
 }
 
