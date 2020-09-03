@@ -7,12 +7,19 @@ import (
 )
 
 type Suggestions struct {
-	Client *request.Client
+	Client   *request.Client
+	language string
 }
 
-func GetInstance(c *request.Client) *Suggestions {
+type Config struct {
+	Client   *request.Client
+	Language string
+}
+
+func GetInstance(c *Config) *Suggestions {
 	return &Suggestions{
-		Client: c,
+		Client:   c.Client,
+		language: c.Language,
 	}
 }
 

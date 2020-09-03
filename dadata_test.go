@@ -4,12 +4,13 @@ import (
 	"context"
 	"os"
 	"testing"
+	"time"
 )
 
 func config() Config {
 	return Config{
-		Token:   os.Getenv("KEY"),
-		Timeout: 10,
+		Token:   os.Getenv("DADATA_KEY"),
+		Timeout: time.Duration(10) * time.Second,
 	}
 }
 

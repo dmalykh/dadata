@@ -12,13 +12,16 @@ import (
 
 func TestGetInstance(t *testing.T) {
 	var c request.Client
-	if GetInstance(&c) == nil {
+	if GetInstance(&Config{
+		Client:   &c,
+		Language: "ru",
+	}) == nil {
 		t.Fatalf(`Can't execute GetInstance().`)
 	}
 }
 
 func getTestInstance() *Suggestions {
-	return GetInstance(&request.Client{
+	var client = request.Client{
 		Handle: func(ctx context.Context, request request.Request, v *interface{}) error {
 			return re.DefaultHandler(ctx, request, v)
 		},
@@ -29,6 +32,10 @@ func getTestInstance() *Suggestions {
 				TLSHandshakeTimeout: 0 * time.Second,
 			},
 		},
+	}
+	return GetInstance(&Config{
+		Client:   &client,
+		Language: "ru",
 	})
 }
 

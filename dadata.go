@@ -11,13 +11,15 @@ import (
 )
 
 type Config struct {
-	Token   string                                                                   //Токен для обращения к API
-	Timeout time.Duration                                                            //Время для timeout запроса в dadata
-	Handle  func(ctx context.Context, request request.Request, v *interface{}) error //Метод, через который будет "проходить" ответ с сервиса
+	Language string
+	Token    string                                                                   //Токен для обращения к API
+	Timeout  time.Duration                                                            //Время для timeout запроса в dadata
+	Handle   func(ctx context.Context, request request.Request, v *interface{}) error //Метод, через который будет "проходить" ответ с сервиса
 }
 
 type Dadata struct {
 	request *request.Client
+	config  *Config
 }
 
 //Возвращает новый экземпляр dadata
@@ -25,8 +27,12 @@ func New(config *Config) *Dadata {
 	if config.Handle == nil {
 		config.Handle = request.DefaultHandler
 	}
+	if config.Language == "" {
+		config.Language = "ru"
+	}
 
 	return &Dadata{
+		config: config,
 		request: &request.Client{
 			Token:  config.Token,
 			Handle: config.Handle,
@@ -34,7 +40,7 @@ func New(config *Config) *Dadata {
 				Timeout: config.Timeout,
 				Transport: &http.Transport{
 					MaxIdleConnsPerHost: 1024,
-					TLSHandshakeTimeout: 0 * time.Second,
+					TLSHandshakeTimeout: 1 * time.Second,
 				},
 			},
 		},
@@ -43,5 +49,8 @@ func New(config *Config) *Dadata {
 
 //Возвращает экземплятр структуры через singletone для работы с подсказками
 func (d *Dadata) Suggestions() *suggestions.Suggestions {
-	return suggestions.GetInstance(d.request)
+	return suggestions.GetInstance(&suggestions.Config{
+		Client:   d.request,
+		Language: d.config.Language,
+	})
 }

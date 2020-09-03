@@ -17,8 +17,9 @@ func (s *Suggestions) Address(ctx context.Context, address string, count int) ([
 		request.Request{
 			Method: request.POST,
 			PostData: map[string]interface{}{
-				"query": strings.Replace(address, "\\", " ", -1), //Дадата сходит с ума при нахождении в адресе \\
-				"count": count,
+				"query":    strings.Replace(address, "\\", " ", -1), //Дадата сходит с ума при нахождении в адресе \\
+				"count":    count,
+				"language": s.language,
 			},
 		},
 		&suggestions,
