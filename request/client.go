@@ -33,7 +33,7 @@ func (c Client) Request(ctx context.Context, req Request, v interface{}) error {
 		return fmt.Errorf(`Can't create new request "%s": %s`, u.String(), err.Error())
 	}
 
-	request.WithContext(ctx)
+	request = request.WithContext(ctx)
 	request.Header.Set("Authorization", "Token "+c.Token)
 	request.Header.Set("Content-Type", "application/json")
 
