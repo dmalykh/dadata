@@ -46,6 +46,24 @@ func TestKeepAlive(t *testing.T) {
 	}
 }
 
+func BenchmarkRequest(b *testing.B) {
+	var server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/keep" {
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("OK"))
+		}
+	}))
+	var client = getClient()
+
+	b.Run("client", func(b *testing.B) {
+		b.ReportAllocs()
+		client.Request(context.TODO(), Request{
+			Url:    server.URL + "/keep",
+			Method: GET,
+		}, nil)
+	})
+}
+
 func getClient() Client {
 	return Client{
 		Handle: func(ctx context.Context, request Request, v *interface{}) error {
